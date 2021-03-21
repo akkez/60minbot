@@ -48,12 +48,13 @@ class Russia1bot:
 
 	def process_avatar(self, update: Update, context: CallbackContext) -> None:
 		photo_id = int(update.callback_query.data.split('_')[-1])
+		logger.info(f'Processing avatar#{photo_id} from {update.effective_user}')
 		user_photos = self._get_photos_of(update.effective_user.id)
 		if photo_id >= len(user_photos.photos):
 			photo_id = 0
 		result_filename = self._transform_photo(update.effective_user.id, user_photos.photos[photo_id])
 		with open(result_filename, 'rb') as f:
-			markup = InlineKeyboardMarkup([[InlineKeyboardButton(f'🔄 Другой аватар {photo_id + 1}', callback_data=f'roll_{photo_id + 1}')]])
+			markup = InlineKeyboardMarkup([[InlineKeyboardButton(f'🔄 Другой аватар', callback_data=f'roll_{photo_id + 1}')]])
 			update.effective_message.edit_media(media=InputMediaPhoto(media=f), reply_markup=markup)
 
 	def echo(self, update: Update, _: CallbackContext) -> None:
@@ -81,6 +82,7 @@ class Russia1bot:
 		return self._combine_photo(file_name)
 
 	def process_photo(self, update: Update, context: CallbackContext) -> None:
+		logger.info(f'Process photo from {update.effective_user}')
 		src_file = update.message.effective_attachment
 		result_filename = self._transform_photo(update.effective_user.id, src_file)
 		with open(result_filename, 'rb') as f:
@@ -92,6 +94,7 @@ class Russia1bot:
 
 	def explanation(self, update: Update, _: CallbackContext):
 		if update and update.effective_user:
+			logger.info(f'Explaining for {update.effective_user}')
 			_.bot.sendMessage(chat_id=update.effective_user.id, text='Мне подойдёт фото. Отправь пожалуйста мне любое фото')
 
 	def start_bot(self) -> None:

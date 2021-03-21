@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 from PIL import Image
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto, ChatAction
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, CallbackQueryHandler
 
 logging.basicConfig(
@@ -32,6 +32,7 @@ class Russia1bot:
 
 	def start(self, update: Update, context: CallbackContext) -> None:
 		logger.info(f'Start from {update.effective_user}')
+		context.bot.sendChatAction(update.effective_user.id, ChatAction.UPLOAD_PHOTO)
 		user_photos = self._get_photos_of(update.effective_user.id)
 		if user_photos and len(user_photos.photos):
 			result_filename = self._transform_photo(update.effective_user.id, user_photos.photos[0])
@@ -47,6 +48,7 @@ class Russia1bot:
 			update.message.reply_photo(photo=f, caption='Привет! Я умею вот так ⬆️ с любым фото, просто пришли мне что-нибудь')
 
 	def process_avatar(self, update: Update, context: CallbackContext) -> None:
+		context.bot.sendChatAction(update.effective_user.id, ChatAction.UPLOAD_PHOTO)
 		photo_id = int(update.callback_query.data.split('_')[-1])
 		logger.info(f'Processing avatar#{photo_id} from {update.effective_user}')
 		user_photos = self._get_photos_of(update.effective_user.id)

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 BASE_DIR = Path(__file__).parent.absolute()
 RUSSIA1_SOURCE_IMAGE = str(BASE_DIR / 'sources/russia1.jpg')
-EXAMPLE_IMAGE = str(BASE_DIR / 'sources/floppa.jpg')
+EXAMPLE_IMAGE = str(BASE_DIR / 'sources/example.jpg')
 
 
 class Russia1bot:
@@ -44,7 +44,7 @@ class Russia1bot:
 				update.message.reply_text('Привет! Я умею вот так ⬆️ с любым фото, просто пришли мне что-нибудь')
 				return
 
-		with open(f'files/example.jpg', 'rb') as f:
+		with open(EXAMPLE_IMAGE, 'rb') as f:
 			update.message.reply_photo(photo=f, caption='Привет! Я умею вот так ⬆️ с любым фото, просто пришли мне что-нибудь')
 
 	def process_avatar(self, update: Update, context: CallbackContext) -> None:
